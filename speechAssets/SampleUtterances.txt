@@ -1,0 +1,2 @@
+GetMetroUpdates tell me the current updates
+GetMetroUpdates update me
