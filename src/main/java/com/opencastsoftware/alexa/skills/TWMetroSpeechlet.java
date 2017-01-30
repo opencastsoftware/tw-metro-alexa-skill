@@ -4,6 +4,10 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.*;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.SimpleCard;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 
 public class TWMetroSpeechlet implements Speechlet {
 
@@ -29,8 +33,15 @@ public class TWMetroSpeechlet implements Speechlet {
 
     }
 
-    private SpeechletResponse getMetroUpdate() {
-        String speechText = "Hello Fiona";
+    private SpeechletResponse getMetroUpdate() throws SpeechletException {
+        Document document  = null;
+        try {
+            document = Jsoup.connect("http://www.nexus.org.uk/metro/updates").get();
+        } catch (IOException e) {
+            throw new SpeechletException("Site Unavailable");
+        }
+        TWMetroUpdatePageParser updates = new TWMetroUpdatePageParser(document);
+        String speechText = updates.toString();
         SimpleCard card = new SimpleCard();
         card.setTitle("MetroUpdates");
         card.setContent(speechText);
